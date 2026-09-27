@@ -6,16 +6,16 @@ Runs entirely locally: no cloud services, no paid APIs, no AI/ML.
 
 ## Screenshots
 
-> Placeholders — capture these screens and drop the images in `docs/screenshots/`, then link them here:
->
-> 1. **Login page** with the demo login buttons visible
-> 2. **Find a doctor** (patient home) — the doctor grid with specialty filter and next-available-slot
-> 3. **Booking a slot** — the day view with time slots and the reason form
-> 4. **My appointments** — upcoming tab, showing a reschedule panel open
-> 5. **Doctor agenda** — a day with a booked appointment and the confirm/complete/no-show/cancel actions
-> 6. **Doctor schedule editor** — weekly blocks plus a time-off exception
-> 7. **Admin — all appointments** with the filter bar in use
-> 8. **Admin — stats page** showing utilization bars and no-show rate
+| | |
+|---|---|
+| **Login** — demo login buttons for each role | **Find a doctor** — specialty filter, next-available-slot per doctor |
+| ![Login](docs/screenshots/01-login.png) | ![Find a doctor](docs/screenshots/02-patient-find-doctor.png) |
+| **Booking a slot** — day view, lunch break correctly excluded | **My appointments** — reschedule panel open inline |
+| ![Booking a slot](docs/screenshots/03-patient-booking.png) | ![My appointments](docs/screenshots/04-patient-appointments-reschedule.png) |
+| **Doctor agenda** — confirm/complete/no-show/cancel actions | **Doctor schedule editor** — weekly blocks + a time-off exception |
+| ![Doctor agenda](docs/screenshots/05-doctor-agenda.png) | ![Doctor schedule](docs/screenshots/06-doctor-schedule.png) |
+| **Admin — all appointments** — filtered by doctor | **Admin — stats** — utilization and no-show rate per doctor |
+| ![Admin appointments](docs/screenshots/07-admin-appointments.png) | ![Admin stats](docs/screenshots/08-admin-stats.png) |
 
 ## Features
 
