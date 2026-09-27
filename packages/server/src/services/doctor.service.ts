@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import type { Clock } from "../core/clock.js";
+import { localDateTimeToUtc } from "../core/clinicTime.js";
 import { computeAvailableSlots } from "../core/slotEngine.js";
 import type { Slot } from "../core/slotEngine.types.js";
 import { isWithinClinicHours } from "../core/scheduleValidation.js";
@@ -115,6 +116,14 @@ export class DoctorService {
       minNoticeMinutes: settings.minNoticeMinutes,
       bookingWindowDays: settings.bookingWindowDays,
     });
+  }
+
+  async getSlotsForDateRange(doctorId: string, fromDateKey: string, toDateKey: string) {
+    await this.getDoctorOrThrow(doctorId);
+    const settings = await this.clinic.getSettings();
+    const from = localDateTimeToUtc(fromDateKey, "00:00", settings.timezone);
+    const to = localDateTimeToUtc(toDateKey, "23:59", settings.timezone);
+    return this.computeSlots(doctorId, from, to);
   }
 
   async createDoctor(input: {

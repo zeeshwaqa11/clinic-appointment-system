@@ -2,7 +2,12 @@ import cors from "cors";
 import express, { type Express } from "express";
 import { env } from "./config/env.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.middleware.js";
+import { adminRouter } from "./routes/admin.routes.js";
+import { appointmentsRouter } from "./routes/appointments.routes.js";
 import { authRouter } from "./routes/auth.routes.js";
+import { doctorsRouter } from "./routes/doctors.routes.js";
+import { notificationsRouter } from "./routes/notifications.routes.js";
+import { specialtiesRouter } from "./routes/specialties.routes.js";
 
 export function createApp(): Express {
   const app = express();
@@ -15,6 +20,11 @@ export function createApp(): Express {
   });
 
   app.use("/api/auth", authRouter);
+  app.use("/api/specialties", specialtiesRouter);
+  app.use("/api/doctors", doctorsRouter);
+  app.use("/api/appointments", appointmentsRouter);
+  app.use("/api/admin", adminRouter);
+  app.use("/api/notifications", notificationsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

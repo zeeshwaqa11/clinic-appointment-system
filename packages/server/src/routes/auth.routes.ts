@@ -1,14 +1,10 @@
 import { Router } from "express";
-import { prisma } from "../config/prisma.js";
 import { asyncHandler } from "../core/asyncHandler.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { validate } from "../middleware/validate.middleware.js";
-import { UserRepository } from "../repositories/user.repo.js";
 import { loginSchema, registerSchema } from "../schemas/auth.schema.js";
-import { AuthService } from "../services/auth.service.js";
+import { authService } from "../container.js";
 import { unauthorizedError } from "../core/errors.js";
-
-const authService = new AuthService(new UserRepository(prisma));
 
 export const authRouter = Router();
 

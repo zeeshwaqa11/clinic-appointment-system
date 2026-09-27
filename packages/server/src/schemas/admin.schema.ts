@@ -24,3 +24,19 @@ export const statsQuerySchema = z.object({
   from: isoDateSchema.optional(),
   to: isoDateSchema.optional(),
 });
+
+const clinicHoursBlockSchema = z
+  .object({
+    weekday: z.number().int().min(0).max(6),
+    openTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+    closeTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  })
+  .refine((v) => v.openTime < v.closeTime, {
+    message: "openTime must be before closeTime",
+    path: ["closeTime"],
+  });
+
+export const replaceHoursSchema = z.object({
+  hours: z.array(clinicHoursBlockSchema).max(7),
+});
+export type ReplaceHoursInput = z.infer<typeof replaceHoursSchema>;
