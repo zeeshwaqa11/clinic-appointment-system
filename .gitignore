@@ -11,3 +11,4 @@ packages/server/prisma/test.db-journal
 coverage/
 .DS_Store
 *.log
+*.tsbuildinfo
