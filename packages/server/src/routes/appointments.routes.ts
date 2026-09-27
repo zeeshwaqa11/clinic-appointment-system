@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { asyncHandler } from "../core/asyncHandler.js";
+import { localDateTimeToUtc } from "../core/clinicTime.js";
 import { unauthorizedError } from "../core/errors.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { requireRole } from "../middleware/requireRole.middleware.js";
@@ -12,7 +13,7 @@ import {
   rescheduleAppointmentSchema,
   transitionAppointmentSchema,
 } from "../schemas/appointment.schema.js";
-import { appointmentService } from "../container.js";
+import { appointmentService, clinicRepo } from "../container.js";
 import type { Actor } from "../services/appointment.service.js";
 import type { Request } from "express";
 
@@ -51,11 +52,12 @@ appointmentsRouter.get(
       from?: string;
       to?: string;
     };
+    const settings = from || to ? await clinicRepo.getSettings() : null;
     const appointments = await appointmentService.list(actor, {
       doctorId,
       status,
-      from: from ? new Date(`${from}T00:00:00.000Z`) : undefined,
-      to: to ? new Date(`${to}T23:59:59.999Z`) : undefined,
+      from: from && settings ? localDateTimeToUtc(from, "00:00", settings.timezone) : undefined,
+      to: to && settings ? localDateTimeToUtc(to, "23:59", settings.timezone) : undefined,
     });
     res.status(200).json({ appointments });
   }),

@@ -153,7 +153,7 @@ Role: any authenticated user (their own notification only). `204 No Content`.
 ## Misc
 
 ### `GET /clinic-info`
-Role: public. `{ "timezone": "Europe/London" }` — used by the frontend to display all times in clinic-local time.
+Role: public. `{ "timezone": "Asia/Karachi" }` — used by the frontend to display all times in clinic-local time.
 
 ### `GET /health`
 Role: public. `{ "status": "ok" }`.

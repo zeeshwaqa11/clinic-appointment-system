@@ -137,17 +137,17 @@ async function main(): Promise<void> {
     specialtyByName.set(name, specialty.id);
   }
 
+  const clinicSettings = {
+    timezone: "Asia/Karachi",
+    minNoticeMinutes: 120,
+    bookingWindowDays: 30,
+    patientMaxUpcoming: 3,
+    cancelCutoffHours: 24,
+  };
   await prisma.clinicSettings.upsert({
     where: { id: 1 },
-    update: {},
-    create: {
-      id: 1,
-      timezone: "Europe/London",
-      minNoticeMinutes: 120,
-      bookingWindowDays: 30,
-      patientMaxUpcoming: 3,
-      cancelCutoffHours: 24,
-    },
+    update: clinicSettings,
+    create: { id: 1, ...clinicSettings },
   });
 
   const weekdayHours = [1, 2, 3, 4, 5].map((weekday) => ({

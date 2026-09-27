@@ -246,7 +246,6 @@ clinic-appointment-system/
 
 ## Known limitations & future improvements
 
-- Admin's `from`/`to` appointment-list filter and the reschedule flow's slot lookups treat query dates as UTC calendar-day boundaries rather than re-deriving them from the clinic timezone on every call — fine for a clinic close to UTC, but worth tightening for a clinic far from UTC.
 - No email/SMS notifications (explicitly out of scope) — only in-app notifications.
 - No pagination on the admin appointments list or stats; fine at seed-data scale, would need it at real scale.
 - Recurring appointments, multiple clinic locations, and file attachments on visit notes are not implemented (see Design Decisions above for how I'd approach the first two).
