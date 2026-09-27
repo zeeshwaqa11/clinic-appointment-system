@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint server
+        run: npm run lint --workspace packages/server
+
+      - name: Lint web
+        run: npm run lint --workspace packages/web
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        working-directory: packages/server
+
+      - name: Apply test database migrations
+        run: npx prisma migrate deploy
+        working-directory: packages/server
+        env:
+          DATABASE_URL: file:./test.db
+
+      - name: Run server tests
+        run: npm run test --workspace packages/server
+        env:
+          NODE_ENV: test
+
+      - name: Typecheck web
+        run: npx tsc -b
+        working-directory: packages/web
+
+      - name: Build web
+        run: npm run build --workspace packages/web
