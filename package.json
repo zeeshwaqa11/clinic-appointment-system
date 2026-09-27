@@ -14,6 +14,7 @@
     "test": "npm run test --workspace packages/server",
     "db:migrate": "npm run db:migrate --workspace packages/server",
     "db:seed": "npm run db:seed --workspace packages/server",
+    "db:setup": "npm run db:migrate --workspace packages/server && npm run db:seed --workspace packages/server",
     "db:reset": "npm run db:reset --workspace packages/server"
   }
 }
