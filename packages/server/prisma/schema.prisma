@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum type, so Role/AppointmentStatus/ExceptionType are
+// plain strings here; the allowed values are enforced by the TypeScript union
+// types in src/core and validated on every request with zod.
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String
+  createdAt    DateTime @default(now())
+
+  doctorProfile        DoctorProfile?
+  patientAppointments  Appointment[]      @relation("PatientAppointments")
+  doctorAppointments   Appointment[]      @relation("DoctorAppointments")
+  appointmentEvents    AppointmentEvent[]
+  notifications        Notification[]
+
+  @@map("users")
+}
+
+model Specialty {
+  id   String @id @default(uuid())
+  name String @unique
+
+  doctors DoctorProfile[]
+
+  @@map("specialties")
+}
+
+model DoctorProfile {
+  userId      String @id
+  specialtyId String
+  bio         String
+  slotMinutes Int
+
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialty          Specialty           @relation(fields: [specialtyId], references: [id])
+  scheduleBlocks     ScheduleBlock[]
+  scheduleExceptions ScheduleException[]
+
+  @@map("doctor_profiles")
+}
+
+model ClinicSettings {
+  id                  Int    @id @default(1)
+  timezone            String
+  minNoticeMinutes    Int
+  bookingWindowDays   Int
+  patientMaxUpcoming  Int
+  cancelCutoffHours   Int
+
+  @@map("clinic_settings")
+}
+
+model ClinicHours {
+  id        String @id @default(uuid())
+  weekday   Int
+  openTime  String
+  closeTime String
+
+  @@unique([weekday])
+  @@map("clinic_hours")
+}
+
+model ClinicHoliday {
+  id   String   @id @default(uuid())
+  date DateTime @unique
+  name String
+
+  @@map("clinic_holidays")
+}
+
+model ScheduleBlock {
+  id        String @id @default(uuid())
+  doctorId  String
+  weekday   Int
+  startTime String
+  endTime   String
+
+  doctor DoctorProfile @relation(fields: [doctorId], references: [userId], onDelete: Cascade)
+
+  @@index([doctorId, weekday])
+  @@map("schedule_blocks")
+}
+
+model ScheduleException {
+  id        String        @id @default(uuid())
+  doctorId  String
+  date      DateTime
+  type      String
+  startTime String?
+  endTime   String?
+
+  doctor DoctorProfile @relation(fields: [doctorId], references: [userId], onDelete: Cascade)
+
+  @@index([doctorId, date])
+  @@map("schedule_exceptions")
+}
+
+model Appointment {
+  id            String            @id @default(uuid())
+  patientId     String
+  doctorId      String
+  startAt       DateTime
+  endAt         DateTime
+  status        String
+  reason        String
+  cancelReason  String?
+  visitNotes    String?
+  activeSlotKey String?           @unique
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  patient User               @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctor  User               @relation("DoctorAppointments", fields: [doctorId], references: [id])
+  events  AppointmentEvent[]
+
+  @@index([patientId])
+  @@index([doctorId, startAt])
+  @@map("appointments")
+}
+
+model AppointmentEvent {
+  id            String   @id @default(uuid())
+  appointmentId String
+  fromStatus    String?
+  toStatus      String
+  actorId       String
+  note          String?
+  createdAt     DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  actor       User        @relation(fields: [actorId], references: [id])
+
+  @@index([appointmentId])
+  @@map("appointment_events")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  message   String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notifications")
+}
