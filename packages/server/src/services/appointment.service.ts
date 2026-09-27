@@ -223,7 +223,7 @@ export class AppointmentService {
 
     const settings = await this.clinic.getSettings();
     assertValidTransition({
-      from: appt.status,
+      from: appt.status as AppointmentStatus,
       to: input.to,
       actorRole: actor.role,
       startAt: appt.startAt,

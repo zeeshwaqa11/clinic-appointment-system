@@ -1,7 +1,7 @@
+import type { PrismaClient } from "@prisma/client";
 import type { Role } from "../core/roles.js";
 import type {
   DoctorProfileModel,
-  PrismaDb,
   ScheduleBlockModel,
   ScheduleExceptionModel,
   SpecialtyModel,
@@ -14,7 +14,7 @@ export interface DoctorWithUser extends DoctorProfileModel {
 }
 
 export class DoctorRepository {
-  constructor(private readonly db: PrismaDb) {}
+  constructor(private readonly db: PrismaClient) {}
 
   listSpecialties(): Promise<SpecialtyModel[]> {
     return this.db.specialty.findMany({ orderBy: { name: "asc" } });

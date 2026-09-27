@@ -1,9 +1,10 @@
-import type { ClinicHolidayModel, ClinicHoursModel, ClinicSettingsModel, PrismaDb } from "./types.js";
+import type { PrismaClient } from "@prisma/client";
+import type { ClinicHolidayModel, ClinicHoursModel, ClinicSettingsModel } from "./types.js";
 
 const SETTINGS_ID = 1;
 
 export class ClinicRepository {
-  constructor(private readonly db: PrismaDb) {}
+  constructor(private readonly db: PrismaClient) {}
 
   async getSettings(): Promise<ClinicSettingsModel> {
     const settings = await this.db.clinicSettings.findUnique({ where: { id: SETTINGS_ID } });

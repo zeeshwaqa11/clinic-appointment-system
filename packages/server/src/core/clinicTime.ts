@@ -1,5 +1,9 @@
-import { addDays, eachDayOfInterval, parseISO } from "date-fns";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
+
+function keyToUtcMs(key: string): number {
+  const [year, month, day] = key.split("-").map(Number);
+  return Date.UTC(year ?? 1970, (month ?? 1) - 1, day ?? 1);
+}
 
 export function dateKey(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -15,8 +19,7 @@ export function weekdayInTz(date: Date, timezone: string): number {
 }
 
 export function weekdayOfDateKey(dateStr: string): number {
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(Date.UTC(year ?? 1970, (month ?? 1) - 1, day ?? 1)).getUTCDay();
+  return new Date(keyToUtcMs(dateStr)).getUTCDay();
 }
 
 export function dateKeyInTz(date: Date, timezone: string): string {
@@ -24,12 +27,17 @@ export function dateKeyInTz(date: Date, timezone: string): string {
 }
 
 export function dateStringsInRange(fromKey: string, toKey: string): string[] {
-  const days = eachDayOfInterval({ start: parseISO(fromKey), end: parseISO(toKey) });
-  return days.map((d) => dateKey(d));
+  const start = keyToUtcMs(fromKey);
+  const end = keyToUtcMs(toKey);
+  const days: string[] = [];
+  for (let t = start; t <= end; t += 86_400_000) {
+    days.push(new Date(t).toISOString().slice(0, 10));
+  }
+  return days;
 }
 
 export function addDaysToKey(key: string, days: number): string {
-  return dateKey(addDays(parseISO(key), days));
+  return new Date(keyToUtcMs(key) + days * 86_400_000).toISOString().slice(0, 10);
 }
 
 export function timeToMinutes(time: string): number {
