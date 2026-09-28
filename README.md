@@ -1,4 +1,4 @@
-# Riverside Clinic — Appointment System
+# Sehat Clinic — Appointment System
 
 A booking system for a small multi-doctor clinic: patients book appointments online, doctors manage their weekly availability and daily agenda, and an admin runs the clinic. The core engineering challenge is scheduling — generating correct available time slots on demand and guaranteeing a doctor can never be double-booked, even under concurrent requests.
 
